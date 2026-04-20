@@ -1,8 +1,25 @@
 # Admin Builders
 
+<p align="center">
+  <img src="./docs/assets/gutu-mascot.png" alt="Gutu mascot" width="220" />
+</p>
+
 Admin Builders reusable library exports.
 
 ![Maturity: Hardened](https://img.shields.io/badge/Maturity-Hardened-2563eb) ![Verification: Build+Typecheck+Lint+Test](https://img.shields.io/badge/Verification-Build%2BTypecheck%2BLint%2BTest-6b7280) ![UI: Mixed runtime helpers](https://img.shields.io/badge/UI-Mixed%20runtime%20helpers-2563eb) ![Consumption: Imports + typed UI primitives](https://img.shields.io/badge/Consumption-Imports%20%2B%20typed%20UI%20primitives-2563eb)
+
+## Part Of The Gutu Stack
+
+| Aspect | Value |
+| --- | --- |
+| Repo kind | First-party library |
+| Domain group | Admin Experience |
+| Primary focus | admin composition, layout builders, operator scaffolding |
+| Best when | You need reusable contracts or UI/runtime helpers with their own release cadence and docs. |
+| Consumed through | Imports + typed UI primitives |
+
+- Gutu libraries stay intentionally separate from apps and plugins so teams can version shared contracts, UI primitives, and runtime helpers without burying them in product code.
+- This library should be consumed through explicit imports, providers, callbacks, and typed helpers rather than undocumented global extension points.
 
 ## What It Does Now
 
