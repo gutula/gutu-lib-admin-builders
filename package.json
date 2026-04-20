@@ -4,5 +4,14 @@
   "type": "module",
   "workspaces": [
     "framework/libraries/*"
-  ]
+  ],
+  "scripts": {
+    "build": "bun --cwd framework/libraries/admin-builders run build",
+    "typecheck": "bun --cwd framework/libraries/admin-builders run typecheck",
+    "lint": "bun --cwd framework/libraries/admin-builders run lint",
+    "test": "bun --cwd framework/libraries/admin-builders run test",
+    "test:unit": "bun --cwd framework/libraries/admin-builders run test:unit",
+    "docs:summary": "node scripts/docs-summary.mjs",
+    "docs:check": "node scripts/docs-check.mjs"
+  }
 }
