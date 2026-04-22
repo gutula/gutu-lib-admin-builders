@@ -18,6 +18,26 @@ export type BuilderPublishContract = {
   id: string;
   revision: number;
   publishedRevision?: number | undefined;
+  stage?: "draft" | "staged" | "published" | "rolled-back" | undefined;
+  stagedRevision?: number | undefined;
+  rollbackTarget?: number | undefined;
+  owner?: string | undefined;
+  policyProfile?: string | undefined;
+  previewUrl?: string | undefined;
+  testEvidence?: Array<{
+    id: string;
+    label: string;
+    passed: boolean;
+    href?: string | undefined;
+  }> | undefined;
+  diff?: string[] | undefined;
+  publishApproval?:
+    | {
+        required: boolean;
+        state: "pending" | "approved" | "rejected";
+        approverId?: string | undefined;
+      }
+    | undefined;
 };
 
 export function createBuilderPanelLayout(layout: BuilderPanelLayout): BuilderPanelLayout {
@@ -38,8 +58,130 @@ export function assertBuilderRevision(
   return createBuilderPublishContract({
     ...contract,
     revision: nextRevision,
-    publishedRevision: nextRevision
+    publishedRevision: nextRevision,
+    stage: "published",
+    stagedRevision: undefined,
+    rollbackTarget: contract.publishedRevision,
+    publishApproval: contract.publishApproval
+      ? {
+          ...contract.publishApproval,
+          state: "approved"
+        }
+      : contract.publishApproval
   });
+}
+
+export function stageBuilderRevision(
+  contract: BuilderPublishContract,
+  nextRevision: number,
+  input: {
+    owner: string;
+    policyProfile: string;
+    previewUrl?: string | undefined;
+    testEvidence?: BuilderPublishContract["testEvidence"] | undefined;
+    diff?: string[] | undefined;
+    publishApprovalRequired?: boolean | undefined;
+  }
+): BuilderPublishContract {
+  if (nextRevision <= contract.revision) {
+    throw new Error(`builder stage conflict: revision ${nextRevision} is not newer than ${contract.revision}`);
+  }
+
+  return createBuilderPublishContract({
+    ...contract,
+    revision: nextRevision,
+    stage: "staged",
+    stagedRevision: nextRevision,
+    owner: input.owner,
+    policyProfile: input.policyProfile,
+    ...(input.previewUrl ? { previewUrl: input.previewUrl } : {}),
+    ...(input.testEvidence ? { testEvidence: [...input.testEvidence] } : {}),
+    ...(input.diff ? { diff: [...input.diff] } : {}),
+    publishApproval: {
+      required: input.publishApprovalRequired ?? true,
+      state: input.publishApprovalRequired === false ? "approved" : "pending"
+    }
+  });
+}
+
+export function publishBuilderRevision(
+  contract: BuilderPublishContract,
+  input: {
+    approverId?: string | undefined;
+  } = {}
+): BuilderPublishContract {
+  if (contract.stage !== "staged" || contract.stagedRevision === undefined) {
+    throw new Error("builder publish requires a staged revision");
+  }
+  if (contract.publishApproval?.required && contract.publishApproval.state === "rejected") {
+    throw new Error("builder publish blocked by rejected approval");
+  }
+
+  return createBuilderPublishContract({
+    ...contract,
+    publishedRevision: contract.stagedRevision,
+    stage: "published",
+    stagedRevision: undefined,
+    rollbackTarget: contract.publishedRevision,
+    publishApproval: contract.publishApproval
+      ? {
+          ...contract.publishApproval,
+          state: "approved",
+          ...(input.approverId ? { approverId: input.approverId } : {})
+        }
+      : contract.publishApproval
+  });
+}
+
+export function rollbackBuilderRevision(contract: BuilderPublishContract, targetRevision: number): BuilderPublishContract {
+  if (contract.publishedRevision === undefined) {
+    throw new Error("builder rollback requires a published revision");
+  }
+  if (targetRevision > contract.publishedRevision) {
+    throw new Error(`builder rollback target ${targetRevision} cannot exceed published revision ${contract.publishedRevision}`);
+  }
+
+  return createBuilderPublishContract({
+    ...contract,
+    publishedRevision: targetRevision,
+    stage: "rolled-back",
+    rollbackTarget: targetRevision
+  });
+}
+
+export function diffBuilderPayload(previous: Record<string, unknown>, next: Record<string, unknown>): string[] {
+  const keys = new Set([...Object.keys(previous), ...Object.keys(next)]);
+  return [...keys]
+    .sort((left, right) => left.localeCompare(right))
+    .flatMap((key) => {
+      const before = JSON.stringify(previous[key] ?? null);
+      const after = JSON.stringify(next[key] ?? null);
+      if (before === after) {
+        return [];
+      }
+      return [`${key}: ${before} -> ${after}`];
+    });
+}
+
+export function simulateBuilderPublish(contract: BuilderPublishContract): {
+  canPublish: boolean;
+  blockers: string[];
+} {
+  const blockers: string[] = [];
+  if (contract.stage !== "staged") {
+    blockers.push("builder revision is not staged");
+  }
+  if ((contract.testEvidence ?? []).some((entry) => !entry.passed)) {
+    blockers.push("builder test evidence contains failures");
+  }
+  if (contract.publishApproval?.required && contract.publishApproval.state !== "approved" && contract.publishApproval.state !== "pending") {
+    blockers.push("builder approval has been rejected");
+  }
+
+  return {
+    canPublish: blockers.length === 0,
+    blockers
+  };
 }
 
 export function BuilderPalette(props: {
