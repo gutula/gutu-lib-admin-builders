@@ -5,7 +5,7 @@
 ## Shipped Now
 
 - Publishes 1 public module from `@platform/admin-builders`: `./main`.
-- Exports 13 named symbols through the public entrypoint, including `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, and more.
+- Exports 18 named symbols through the public entrypoint, including `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, and more.
 - Uses a React-aware surface model: Mixed runtime helpers.
 - Verification lanes present: Build+Typecheck+Lint+Test.
 

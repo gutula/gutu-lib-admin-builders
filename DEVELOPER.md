@@ -35,6 +35,7 @@ Builds higher-level admin layouts and assembly helpers so host apps can turn con
 | Package ID | `admin-builders` |
 | Display Name | Admin Builders |
 | Import Name | `@platform/admin-builders` |
+| Canonical Namespace Target | `@gutu/admin-builders` |
 | Version | `0.1.0` |
 | UI Surface | Mixed runtime helpers |
 | Consumption Model | Imports + typed UI primitives |
@@ -48,6 +49,7 @@ Builds higher-level admin layouts and assembly helpers so host apps can turn con
 | Dev Dependencies | None |
 | React Runtime | Yes |
 | Workspace Scoped | Yes |
+| Legacy Compatibility IDs | `@platform/admin-builders` |
 
 ### Dependency interpretation
 
@@ -59,14 +61,14 @@ Builds higher-level admin layouts and assembly helpers so host apps can turn con
 
 | Module | File | Named Exports |
 | --- | --- | --- |
-| `./main` | `src/main.ts` | `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, `BuilderPalette`, `BuilderCanvas` |
+| `./main` | `src/main.ts` | `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, `stageBuilderRevision`, `publishBuilderRevision` |
 
 ### Source module map
 
 | Source File | Exported Symbols |
 | --- | --- |
 | `index.ts` | No exports detected |
-| `main.ts` | `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, `BuilderPalette`, `BuilderCanvas` |
+| `main.ts` | `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, `stageBuilderRevision`, `publishBuilderRevision` |
 
 ## React, UI, And Extensibility Notes
 
@@ -144,7 +146,7 @@ console.log(typeof createBuilderPanelLayout);
 ### Current truth
 
 - Publishes 1 public module from `@platform/admin-builders`: `./main`.
-- Exports 13 named symbols through the public entrypoint, including `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, and more.
+- Exports 18 named symbols through the public entrypoint, including `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, and more.
 - Uses a React-aware surface model: Mixed runtime helpers.
 - Verification lanes present: Build+Typecheck+Lint+Test.
 

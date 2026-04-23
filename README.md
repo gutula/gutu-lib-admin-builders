@@ -24,7 +24,7 @@ Admin Builders reusable library exports.
 ## What It Does Now
 
 - Publishes 1 public module from `@platform/admin-builders`: `./main`.
-- Exports 13 named symbols through the public entrypoint, including `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, and more.
+- Exports 18 named symbols through the public entrypoint, including `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, and more.
 - Uses a React-aware surface model: Mixed runtime helpers.
 - Verification lanes present: Build+Typecheck+Lint+Test.
 
@@ -35,7 +35,7 @@ Admin Builders reusable library exports.
 Why this tier:
 - Group: **Admin Experience**
 - Public modules: 1
-- Named exports: 13
+- Named exports: 18
 - Test files: 1
 - Contract lane: not present
 
@@ -45,6 +45,7 @@ Why this tier:
 | --- | --- |
 | Package ID | `admin-builders` |
 | Import Name | `@platform/admin-builders` |
+| Canonical Namespace Target | `@gutu/admin-builders` |
 | UI Surface | Mixed runtime helpers |
 | Consumption Model | Imports + typed UI primitives |
 | Verification | Build+Typecheck+Lint+Test |
@@ -54,17 +55,25 @@ Why this tier:
 | Field | Value |
 | --- | --- |
 | Package Name | `@platform/admin-builders` |
+| Canonical Namespace Target | `@gutu/admin-builders` |
+| Legacy Compatibility IDs | `@platform/admin-builders` |
 | Direct Dependencies | `@platform/admin-contracts`, `@platform/layout`, `@platform/ui`, `@platform/ui-kit`, `react` |
 | Peer Dependencies | None |
 | React Runtime | Yes |
 | Workspace Requirement | Compatible Gutu workspace required |
+
+## Namespace Policy
+
+- `@gutu/*` is the canonical public framework namespace for new work.
+- This repo currently publishes `@platform/admin-builders` as the legacy compatibility package id while the migration to `@gutu/admin-builders` is completed.
+- Catalog metadata carries the canonical target id so dashboards, docs, and future tooling can present one uniform Gutu namespace without breaking current consumers.
 
 ## Capability Matrix
 
 | Capability | Count / Mode | Notes |
 | --- | --- | --- |
 | Public Modules | 1 | `./main` |
-| Named Exports | 13 | `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, `BuilderPalette`, `BuilderCanvas` |
+| Named Exports | 18 | `packageId`, `packageDisplayName`, `packageDescription`, `createBuilderPanelLayout`, `createBuilderPublishContract`, `assertBuilderRevision`, `stageBuilderRevision`, `publishBuilderRevision` |
 | UI Surface | Mixed runtime helpers | React-aware surface detected |
 | Tests | 1 | Build+Typecheck+Lint+Test |
 
